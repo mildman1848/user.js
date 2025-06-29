@@ -1,0 +1,26 @@
+# .github/workflows/merge-custom-mods-to-main.yml
+name: Merge custom-mods to main
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '27 3 * * 1'
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Merge custom-mods
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin custom-mods:custom-mods
+          git merge --no-edit custom-mods
+          git push origin main

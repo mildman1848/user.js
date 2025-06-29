@@ -1,0 +1,30 @@
+# .github/workflows/sync-arkenfox.yml
+name: Sync arkenfox-upstream
+
+on:
+  schedule:
+    - cron: '11 3 * * 1'  # Jeden Montag 03:11 UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout arkenfox-upstream branch
+        uses: actions/checkout@v4
+        with:
+          ref: arkenfox-upstream
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Add arkenfox remote and fetch
+        run: |
+          git remote add arkenfox https://github.com/arkenfox/user.js || true
+          git fetch arkenfox
+
+      - name: Merge arkenfox/master into arkenfox-upstream
+        run: |
+          git merge --allow-unrelated-histories --no-edit arkenfox/master || echo "No new changes"
+          
+      - name: Push if updated
+        run: |
+          git push origin arkenfox-upstream

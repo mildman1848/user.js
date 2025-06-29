@@ -1,0 +1,30 @@
+# .github/workflows/sync-betterfox.yml
+name: Sync betterfox-upstream
+
+on:
+  schedule:
+    - cron: '19 3 * * 1' # Jeden Montag 03:19 UTC
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout betterfox-upstream branch
+        uses: actions/checkout@v4
+        with:
+          ref: betterfox-upstream
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Add betterfox remote and fetch
+        run: |
+          git remote add betterfox https://github.com/yokoffing/Betterfox || true
+          git fetch betterfox
+
+      - name: Merge Betterfox/main into betterfox-upstream
+        run: |
+          git merge --allow-unrelated-histories --no-edit betterfox/main || echo "No new changes"
+          
+      - name: Push if updated
+        run: |
+          git push origin betterfox-upstream
