@@ -1,6 +1,9 @@
 name: Merge custom-mods to main
 
 on:
+  push:
+    branches:
+      - custom-mods
   workflow_dispatch:
   schedule:
     - cron: '27 3 * * 1'
@@ -29,20 +32,8 @@ jobs:
           # README.md zurückkopieren
           cp /tmp/README.md README.md || echo "No README.md to restore"
 
-      - name: Remove excluded files/folders before commit
-        run: |
-          rm -rf .github\ISSUE_TEMPLATE/
-          rm -f .github\FUNDING.yml
-          rm -rf personal/
-          rm -rf zen/
-          rm -f Fastfox.js
-          rm -f install.py
-          rm -f Peskyfox.js
-          rm -f policies.json
-          rm -f Securefox.js
-          rm -f Smoothfox.js
       - name: Commit & Push
         run: |
-          git add .
-          git commit -m "Merge custom-mods to main (excluded certain files/folders)" || echo "No changes to commit"
+          git add README.md
+          git commit -m "Preserve README.md from main during merge" || echo "No changes to commit"
           git push origin main
