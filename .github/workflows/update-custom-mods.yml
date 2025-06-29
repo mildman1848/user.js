@@ -27,9 +27,23 @@ jobs:
           path: betterfox-upstream
           token: ${{ secrets.GH_PAT }}
 
-      - name: Overwrite user.js from betterfox-upstream
+      - name: Overwrite user.js from betterfox-upstream, updater.bat & prefsCleaner.bat from arkenfox-upstream
         run: |
           cp betterfox-upstream/user.js ./user.js
+          cp arkenfox-upstream/prefsCleaner.bat ./prefsCleaner.bat
+
+      - name: Remove excluded files/folders before commit
+        run: |
+          rm -rf personal/
+          rm -rf zen/
+          rm -rf .github/ISSUE_TEMPLATE/
+          rm -f .github/FUNDING.yml
+          rm -f Fastfox.js
+          rm -f Peskyfox.js
+          rm -f Securefox.js
+          rm -f Smoothfox.js
+          rm -f install.py
+          rm -f policies.json
 
       - name: Commit & Push
         run: |
