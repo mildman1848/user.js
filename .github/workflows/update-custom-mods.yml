@@ -27,6 +27,13 @@ jobs:
           path: betterfox-upstream
           token: ${{ secrets.GH_PAT }}
 
+      - name: Checkout arkenfox-upstream branch
+        uses: actions/checkout@v4
+        with:
+          ref: arkenfox-upstream
+          path: arkenfox-upstream
+          token: ${{ secrets.GH_PAT }}
+
       - name: Overwrite user.js from betterfox-upstream, updater.bat & prefsCleaner.bat from arkenfox-upstream
         run: |
           cp betterfox-upstream/user.js ./user.js
