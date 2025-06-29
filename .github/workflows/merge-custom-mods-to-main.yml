@@ -17,12 +17,18 @@ jobs:
           ref: main
           token: ${{ secrets.GH_PAT }}
 
-      - name: Merge custom-mods
+      - name: Save current README.md
+        run: |
+          cp README.md /tmp/README.md || echo "No README.md to save"
+
+      - name: Merge custom-mods (README bleibt erhalten)
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git fetch origin custom-mods:custom-mods
-          git merge --allow-unrelated-histories --no-edit -X theirs custom-mods
+          git merge --allow-unrelated-histories --no-edit custom-mods || true
+          # Überschreibe README.md wieder mit der Hauptversion
+          cp /tmp/README.md README.md || echo "No README.md to restore"
+          git add README.md
+          git commit -m "Preserve README.md from main during merge" || echo "No changes to commit"
           git push origin main
-
-
